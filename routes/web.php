@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BatchController;
+
 
 
 Route::get('/', function () {
@@ -32,4 +34,12 @@ Route::controller(ProductController::class)->group(function () {
 // essa única declaração funciona para o grupo todo
 // Route::resource('products', ProductController::class);
 
-
+Route::controller(BatchController::class)->group(function () {
+    Route::get('/batches', 'index')->name('batches'); // p/ listagem
+    Route::get('/batches/create', 'create')->name('batches.create'); // p/ form de adição
+    Route::post('/batches', 'store')->name('batches.store'); // realiza o cadastro efetivamente
+    Route::get('/batches/{batch}/edit', 'edit')->name('batches.edit'); // p/ form de edição
+    Route::put('/batches/{batch}', 'update')->name('batches.update'); // realiza o update efetivamente
+    Route::get('/batches/{batch}', 'show')->name('batches.show');
+    Route::delete('/batches/{batch}', 'destroy')->name('batches.destroy');
+});

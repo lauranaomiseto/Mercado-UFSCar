@@ -26,7 +26,7 @@
             </x-slot:icon>
         </x-cards.feature>
     
-        <x-cards.feature text="Gestão de Estoque" route="">
+        <x-cards.feature text="Gestão de Estoque" route="{{ route('batches') }}">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7.5 16.775H7.4V16.875V18.75V18.85H7.5H13.125H13.225V18.75V16.875V16.775H13.125H7.5ZM7.5 20.525H7.4V20.625V22.5V22.6H7.5H16.875H16.975V22.5V20.625V20.525H16.875H7.5Z" fill="#DB5A0F" stroke="#DB5A0F" stroke-width="0.2"/>
