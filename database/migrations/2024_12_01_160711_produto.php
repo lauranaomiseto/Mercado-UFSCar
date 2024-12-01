@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('produto', function (Blueprint $table){
-            $table->id();
+            $table->increments('id');
             $table->string('descricao'); // por default length 255
             $table->float('preco');
             $table->timestamps();
