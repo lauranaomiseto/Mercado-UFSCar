@@ -15,13 +15,13 @@
         @error('descricao')
             <div class="text-red-300 max-w-[295px]">{{ $message }}</div>
         @enderror
-        <x-inputs.basic label="Descrição:" name="descricao" value="" placeholder="Nome do produto">
+        <x-inputs.basic type="text" label="Descrição:" name="descricao" value="" placeholder="Nome do produto">
         </x-inputs>
 
         @error('preco')
             <div class="text-red-300 max-w-[295px]">{{ $message }}</div>
         @enderror
-        <x-inputs.basic label="Preço unitário:" name="preco" value="" placeholder="12.34">
+        <x-inputs.basic type="text" label="Preço unitário:" name="preco" value="" placeholder="12.34">
         </x-inputs>
 
         <button class="m-auto px-[25px] py-[10px] text-sm text-center text-white border-orange border-2 bg-orange rounded-md hover:bg-dark-orange"

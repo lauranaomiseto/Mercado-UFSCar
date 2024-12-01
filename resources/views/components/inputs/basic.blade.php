@@ -1,4 +1,5 @@
 @props([
+    'type',
     'label',
     'name',
     'value',
@@ -9,7 +10,7 @@
 for="{{ $name }}">{{ $label }}</label><br>
 
 <input class="w-[295px] bg-light-gray px-[15px] py-[10px] rounded-[5px] mt-[5px] mb-[25px] text-medium-gray"
- type="text" 
+ type="{{ $type }}" 
  name="{{ $name }}"
  value="{{ $value }}" 
  placeholder="{{ $placeholder }}"><br>

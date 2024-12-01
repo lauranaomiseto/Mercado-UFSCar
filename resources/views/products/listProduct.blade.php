@@ -26,7 +26,7 @@
             
             <div class="w-[200px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $product->descricao }}</div>
 
-            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $product->preco }}</div>
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ number_format($product->preco, 2, ',', '') }}</div>
 
             <div class="w-fit text-orange">
                 <a href="{{ route('products.edit', ['product' => $product->id]) }}" class="mr-5 hover:underline">Editar</a>
