@@ -29,6 +29,8 @@
         <div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
             <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">#{{ $batch->id_produto }}</div>
 
+            <div class="w-[200px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $batch->product->descricao }}</div>
+
             <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">L: {{ $batch->id }}</div>
 
             <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $batch->validade }}</div>

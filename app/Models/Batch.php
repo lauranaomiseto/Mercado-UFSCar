@@ -12,4 +12,10 @@ class Batch extends Model
         'quantidade',
         'validade'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'id_produto');
+    }
+
 }
