@@ -22,11 +22,11 @@
         @foreach ($products as $product)
 
         <div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
-            <div class="w-[100px] mr-5">#{{ $product->id }}</div>
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">#{{ $product->id }}</div>
             
-            <div class="w-[200px] mr-5">{{ $product->descricao }}</div>
+            <div class="w-[200px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $product->descricao }}</div>
 
-            <div class="w-[100px] mr-5">{{ $product->preco }}</div>
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $product->preco }}</div>
 
             <div class="w-fit text-orange">
                 <a href="{{ route('products.edit', ['product' => $product->id]) }}" class="mr-5 hover:underline">Editar</a>
