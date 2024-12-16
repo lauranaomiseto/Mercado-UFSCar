@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+		
+		Schema::dropIfExists('lote');
+		
         Schema::create('lote', function (Blueprint $table){
             $table->increments('id');
-            $table->integer('id_produto');
-            $table->integer('quantidade');
+            $table->unsignedInteger('id_produto');
+            $table->unsignedInteger('quantidade');
             $table->date('validade');
             $table->timestamps();
             $table->foreign('id_produto')->references('id')->on('produto');
