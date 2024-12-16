@@ -44,7 +44,7 @@
             </x-slot:icon>
         </x-cards.feature>
     
-        <x-cards.feature text="Operação de vendas" route="">
+        <x-cards.feature text="Operação de vendas" route="{{ route('sales') }}">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M25.625 8.75L15 2.5L4.375 8.75V21.25L15 27.5L25.625 21.25V8.75Z" stroke="#DB5A0F" stroke-width="2.3" stroke-linejoin="round"/>

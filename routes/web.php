@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BatchController;
-
-
+use App\Http\Controllers\SaleController;
 
 Route::get('/', function () {
     return view('home');
@@ -42,4 +41,15 @@ Route::controller(BatchController::class)->group(function () {
     Route::put('/batches/{batch}', 'update')->name('batches.update'); // realiza o update efetivamente
     Route::get('/batches/{batch}', 'show')->name('batches.show');
     Route::delete('/batches/{batch}', 'destroy')->name('batches.destroy');
+});
+
+
+Route::controller(SaleController::class)->group(function () {
+    Route::get('/sales', 'index')->name('sales'); // p/ listagem
+    Route::get('/sales/create', 'create')->name('sales.create'); // p/ form de adição
+    Route::post('/sales', 'store')->name('sales.store'); // realiza o cadastro efetivamente
+    Route::get('/sales/{sale}/edit', 'edit')->name('sales.edit'); // p/ form de edição
+    Route::put('/sales/{sale}', 'update')->name('sales.update'); // realiza o update efetivamente
+    Route::get('/sales/{sale}', 'show')->name('sales.show');
+    Route::delete('/sales/{sale}', 'destroy')->name('sales.destroy');
 });
