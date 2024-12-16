@@ -11,9 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-		
-		Schema::dropIfExists('prod_venda');
-		
         Schema::create('prod_venda', function (Blueprint $table){
             $table->unsignedInteger('id_produto');
             $table->unsignedInteger('id_lote');
