@@ -11,9 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-		
-		Schema::dropIfExists('lote');
-		
         Schema::create('lote', function (Blueprint $table){
             $table->increments('id');
             $table->unsignedInteger('id_produto');
