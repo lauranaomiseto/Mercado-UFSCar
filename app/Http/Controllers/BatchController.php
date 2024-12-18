@@ -6,6 +6,7 @@ use App\Models\Batch;
 use App\Models\Product;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class BatchController extends Controller
 {
@@ -14,9 +15,12 @@ class BatchController extends Controller
      */
     public function index()
     {
-        $batches = Batch::all();
+        $batches = Batch::where('validade', '>=', Carbon::now()->toDateString())->get();
+        $expired_batches = Batch::where('validade', '<', Carbon::now()->toDateString())->get();
+
         return view('batches/listBatch', [
-            'batches' => $batches
+            'batches' => $batches,
+            'expired_batches' => $expired_batches
         ]);
     }
 

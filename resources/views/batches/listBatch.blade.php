@@ -22,8 +22,12 @@
         <div class="text-red-300">*{{ session()->get('message') }}</div>
     @endif
 
-
+    @if(!empty($batches)) 
     <div class="w-fit m-auto text-dark-gray">
+        <p class="mb-[20px]">
+            Lotes dentro da validade:
+        </p>
+
         @foreach ($batches as $batch)
 
         <div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
@@ -45,6 +49,37 @@
 
         @endforeach
     </div>
+    @endif
+
+    
+    @if(!empty($expired_batches)) 
+    <div class="w-fit m-auto mt-[50px] text-dark-gray">   
+    <p class="mb-[20px]">
+            Lotes fora da validade:
+        </p>
+
+
+        @foreach ($expired_batches as $expired_batch)
+
+        <div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">#{{ $expired_batch->id_produto }}</div>
+
+            <div class="w-[200px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $expired_batch->product->descricao }}</div>
+
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">L: {{ $expired_batch->id }}</div>
+
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $expired_batch->validade }}</div>
+
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">{{ $expired_batch->quantidade }}</div>
+
+            <div class="w-fit text-orange">
+                <a href="{{ route('batches.edit', ['batch' => $expired_batch->id]) }}" class="mr-5 hover:underline">Editar</a>
+                <a href="{{ route('batches.show', ['batch' => $expired_batch->id]) }}" class="hover:underline">Detalhar</a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @endif
 
 
 </x-layout>
