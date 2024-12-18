@@ -1,3 +1,4 @@
+
 <x-layout>
 
     <div class="max-w-[850px] w-4/5 m-auto my-[50px] border-b-2 border-orange">
@@ -11,10 +12,29 @@
                     VENDAS
                 </span>
             </h1>
-        
-            <x-buttons.primary route="" text="Adicionar nova venda">
-            </x-buttons.primary>
+			
+		<form action="{{ route('sales.store') }}" method="POST" class="w-fit m-auto">
+			@csrf
+			<button type="submit">Registrar</button>
+		</form>
+		
         </div>
+    </div>
+	
+	 <div class="w-fit m-auto text-dark-gray">
+        @foreach ($sales as $sale)
+
+        <div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
+            <div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">#{{ $sale->id }}</div>
+
+            <div class="w-fit text-orange">
+                <a href="{{ route('sales.edit', ['sale' => $sale->id]) }}" class="mr-5 hover:underline">Editar</a>
+                <a href="{{ route('sales.show', ['sale' => $sale->id]) }}" class="hover:underline">Detalhar</a>
+				<a href="{{ route('sales.destroy', ['sale' => $sale->id]) }}" class="hover:underline">Remover</a>
+            </div>
+        </div>
+
+        @endforeach
     </div>
 
     <!-- message pode vir de BatchController show() -->
