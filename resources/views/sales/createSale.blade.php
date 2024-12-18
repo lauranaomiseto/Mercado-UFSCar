@@ -39,8 +39,7 @@
 						Finalizar
 					</button>
 
-					<a href="#" class="flex items-center text-orange-500 hover:underline">
-						← Voltar
+					<x-buttons.icon route="{{ route('sales') }}" text="Voltar"></x-buttons.icon>
 					</a>
 				</div>
 			</div>
@@ -48,17 +47,48 @@
 	</form>
 	
 	<script>
+
+		let addedProducts = []; // Vetor para armazenar os produtos adicionados
+
+
 		let itemIndex = 0;
 		
 		const prods = @json($products);
 		console.log(prods);
 		
 		document.getElementById('add-item').addEventListener('click', () => {
+
+			// verificar se código do produto e quantidade são válidoss
+
 			const container = document.getElementById('products_to_store');
 			const produto = document.getElementById('produto');
 			const quantidade = document.getElementById('quantidade');
 			const newItem = document.createElement('div');
 			newItem.classList.add('item');
+			let selectedProduct = null;
+
+			console.log(prods);
+
+			for (let i = 0; i < prods.length; i++) {
+                if (prods[i].id_produto == produto.value) {
+                    selectedProduct = prods[i];
+                    break;
+                }
+            }
+
+            if (!selectedProduct) {
+                alert("Código do produto inválido!");
+                return;
+            }
+
+            // Verificação de quantidade
+            if (quantidade.value <= 0 || quantidade.value > selectedProduct.quantidade) {
+                alert("Quantidade inválida!");
+                return;
+            }
+
+			
+
 			
 			const input1 = document.createElement('input');
 			input1.type = "hidden";
@@ -72,16 +102,40 @@
 
 			container.appendChild(input1);
 			container.appendChild(input2);
+
+			// criar vetor para armazenar informações do prduto
+
+
+			addedProducts.push({
+				id: selectedProduct.id_produto,
+				descricao: selectedProduct.descricao,
+				preco: selectedProduct.preco,
+				quantidade: quantidade.value
+   			});
+
+
+			console.log(addedProducts);
 			
 			itemIndex++;
 			
 			const produtos = document.getElementById('produtos');
 			const newCard = document.createElement('div');
+
+			// passar os atributos para visualização
 			newCard.innerHTML = `
-				<div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
-					<div class="w-[100px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">#${produto.value}</div>
-				</div>
-			`;
+                <div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg items-center">
+                    <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                        ${selectedProduct.id_produto}
+                    </div>
+					<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                        ${selectedProduct.descricao}
+                    </div>
+					<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                        ${selectedProduct.preco}
+                    </div>
+                    <div class="text-gray-600">Quantidade: ${quantidade.value}</div>
+                </div>
+            `;
 
 			produtos.appendChild(newCard);
 		});
