@@ -13,10 +13,7 @@
                 </span>
             </h1>
 			
-		<form action="{{ route('sales.store') }}" method="POST" class="w-fit m-auto">
-			@csrf
-			<button type="submit">Registrar</button>
-		</form>
+		<x-buttons.primary route="{{ route('sales.create') }}" text="Adicionar nova venda"></x-buttons.primary>
 		
         </div>
     </div>

@@ -46,6 +46,7 @@ class SaleController extends Controller
      */
     public function store(Request $request)
     {
+		dd($request->all());
         $sale = new Sale();
         $success = $sale->save();
 		
@@ -53,7 +54,7 @@ class SaleController extends Controller
         {
             return redirect()->back()->with('message', 'Algo deu errado...');
         }
-        return redirect()->route('sales.create');
+        return redirect()->route('sales');
     }
 
     /**
