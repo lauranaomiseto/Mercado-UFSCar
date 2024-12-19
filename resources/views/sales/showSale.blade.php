@@ -5,8 +5,11 @@
         </x-buttons.icon>
     
         <div class="flex justify-between content-center flex-wrap my-[50px] gap-5">
+            <h1 class="text-4xl font-light w-4/5 overflow-hidden whitespace-nowrap text-ellipsis"> 
+                #{{ $sale->id_venda }}
+            </h1>
         
-            <form action="{{ route('sales.destroy', ['sale' => $sale->id]) }}" method="POST">
+            <form action="{{ route('sales.destroy', ['sale' => $sale->id_venda]) }}" method="POST">
                 @csrf 
                 @method('DELETE')
 
@@ -17,11 +20,19 @@
             </form>
         </div>
     </div>
-
-    <div class="max-w-[850px] w-4/5 m-auto">
+	
+	<div class="max-w-[850px] w-4/5 m-auto">
         <p class="mb-[15px]">
-            <strong>Código:</strong> #{{ $sale->id }}
+            <strong>Código da venda:</strong> #{{ $sale->id_venda }}
+        </p>
+        <p class="mb-[15px]">
+            <strong>Quantidade de produtos:</strong> {{ $sale->total_quantidade }}
+        </p>
+		<p class="mb-[15px]">
+            <strong>Total:</strong> {{ number_format($sale->total_venda, 2, ',', '.') }}
         </p>
     </div>
+
+    
 
 </x-layout>

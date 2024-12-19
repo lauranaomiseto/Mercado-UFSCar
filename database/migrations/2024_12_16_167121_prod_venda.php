@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('id_lote');
 			$table->unsignedInteger('id_venda');
             $table->unsignedInteger('quantidade');
+			$table->timestamps();
 			$table->primary(['id_produto', 'id_lote', 'id_venda']);
             $table->foreign('id_produto')->references('id')->on('produto');
 			$table->foreign('id_lote')->references('id')->on('lote');

@@ -40,7 +40,7 @@
                 <div class="space-y-6">
                     <div>
                         <span class="text-gray-600 text-lg">Total:</span>
-                        <p class="text-4xl font-bold text-gray-800">123,45</p>
+                        <p class="text-4xl font-bold text-gray-800" id = "total_price">00.00</p>
                         <hr class="border-t-2 border-orange-500 mt-2">
                     </div>
 
@@ -89,11 +89,13 @@
             input1.type = "hidden";
             input1.name = "product_ids_" + itemIndex;
             input1.value = produto.value;
+			input1.setAttribute('data-index', itemIndex);
 
             const input2 = document.createElement('input');
             input2.type = "hidden";
             input2.name = "quantitys_" + itemIndex;
             input2.value = quantidade.value;
+			input2.setAttribute('data-index', itemIndex);
 
             container.appendChild(input1);
             container.appendChild(input2);
@@ -118,7 +120,7 @@
                     ${selectedProduct.descricao}
                 </div>
                 <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
-                    ${selectedProduct.preco}
+                    ${selectedProduct.preco.toFixed(2)}
                 </div>
                 <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold"> ${quantidade.value}</div>
 
@@ -128,7 +130,12 @@
             `;
 
             produtos.appendChild(newCard);
-
+			
+			total_price = 0.;
+			addedProducts.forEach(e => total_price += e.quantidade * e.preco);
+			const total = document.getElementById('total_price');
+			total.innerText = total_price.toFixed(2);
+			
             itemIndex++;
         });
 
@@ -137,7 +144,12 @@
             if (event.target.classList.contains('remove-item')) {
                 const indexToRemove = event.target.getAttribute('data-index');
                 addedProducts = addedProducts.filter(item => item.index != indexToRemove);
-                document.querySelector(`[data-index="${indexToRemove}"]`).remove();
+				document.querySelectorAll(`[data-index="${indexToRemove}"]`).forEach(e => e.remove());
+				
+				total_price = 0.;
+				addedProducts.forEach(e => total_price += e.quantidade * e.preco);
+				const total = document.getElementById('total_price');
+				total.innerText = total_price.toFixed(2);
             }
         });
     </script>

@@ -10,7 +10,7 @@ class SaleProd extends Model
     protected $fillable = [
         'id_produto',
         'id_lote',
-		'id_produto',
+		'id_venda',
 		'quantidade',
     ];
 }
