@@ -1,11 +1,9 @@
 <x-layout>
-
-    <div>
-        <p>
-            Faça login para acessar o sistema:
-        </p>
-
-        <form action="">
+    <div class="h-screen w-screen flex items-center">
+        <form action="" class="m-auto w-fit h-fit px-[105px] py-[75px] flex flex-col items-center bg-light-gray rounded-lg">
+            <p class="text-center pb-[25px]">
+                Faça login para acessar o sistema:
+            </p>
             <x-inputs.login text="Usuário" texttype="text">
                 <x-slot:icon>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,12 +20,9 @@
                     </svg>
                 </x-slot:icon>
             </x-inputs.login>
+
+            <button class="px-[25px] py-[10px] text-sm text-center text-white border-orange border-2 bg-orange rounded-md hover:bg-dark-orange"
+            type="submit">Login</button>
         </form>
-
-        
-
-
-
     </div>
-
 </x-layout>
