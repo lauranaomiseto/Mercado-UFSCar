@@ -17,6 +17,12 @@ Route::get('/login', function () {
 
 Route::controller(UserController::class)->group(function (){
     Route::get('/users', 'index')->name('users');
+    Route::get('/users/create', 'create')->name('users.create'); // p/ form de adição
+    Route::post('/users', 'store')->name('users.store'); // realiza o cadastro efetivamente
+    Route::get('/users/{user}/edit', 'edit')->name('users.edit'); // p/ form de edição
+    Route::put('/users/{user}', 'update')->name('users.update'); // realiza o update efetivamente
+    Route::get('/users/{user}', 'show')->name('users.show');
+    Route::delete('/users/{user}', 'destroy')->name('users.destroy');
 });
 
 Route::controller(ProductController::class)->group(function () {
