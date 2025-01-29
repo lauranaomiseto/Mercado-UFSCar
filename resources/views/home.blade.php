@@ -35,7 +35,7 @@
             </x-slot:icon>
         </x-cards.feature>
     
-        <x-cards.feature text="Emissão de relatórios" route="">
+        <x-cards.feature text="Emissão de relatórios" route="{{ route('report') }}">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9.375 16.725H9.225V16.875V18.75V18.9H9.375H16.875H17.025V18.75V16.875V16.725H16.875H9.375ZM9.375 12.0375H9.225V12.1875V14.0625V14.2125H9.375H20.625H20.775V14.0625V12.1875V12.0375H20.625H9.375ZM9.375 21.4125H9.225V21.5625V23.4375V23.5875H9.375H14.0625H14.2125V23.4375V21.5625V21.4125H14.0625H9.375Z" fill="#DB5A0F" stroke="#DB5A0F" stroke-width="0.3"/>
