@@ -30,25 +30,34 @@
         <x-inputs.basic type="password" label="Senha:" name="password" value="" placeholder="abcDEF123#@!">
         </x-inputs>
 
-        @error('permission')
+        @error('role')
             <div class="text-red-300 max-w-[295px]">{{ $message }}</div>
         @enderror
 
-        <label for="papeis">Permissão:</label>
+        <label for="papeis">Papel:</label>
         <div id="papeis" class="flex flex-col mb-[25px]">
             <div class="mt-[5px]">
-                <input type="radio" id="a" name="permission" value="A">
-                <label for="a">Tipo A</label>
+                <input type="radio" id="gestor" name="role" value="gestor">
+                <label for="gestor">Gestor de suprimentos</label>
             </div>
     
             <div class="mt-[5px]">
-                <input type="radio"  id="b" name="permission" value="B">
-                <label for="b">Tipo B</label>
+                <input type="radio"  id="estoquista" name="role" value="estoquista">
+                <label for="estoquista">Estoquista</label>
             </div>
 
             <div class="mt-[5px]">
-                <input type="radio" id="c" name="permission" value="C">
-                <label for="c">Tipo C</label>
+                <input type="radio" id="operador" name="role" value="operador">
+                <label for="operador">Operador de caixa</label>
+            </div> 
+
+            <div class="mt-[5px]">
+                <input type="radio" id="gerente" name="role" value="gerente">
+                <label for="gerente">Gerente</label>
+            </div>     
+                       <div class="mt-[5px]">
+                <input type="radio" id="adm" name="role" value="adm">
+                <label for="adm">Administrador</label>
             </div>    
         </div>
 

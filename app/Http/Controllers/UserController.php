@@ -28,14 +28,14 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email',
             'password' => 'required|string|min:8',
-            'permission' => 'required',
+            'role' => 'required',
         ]);
 
         $user = new User();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
-        // $user->permission = $validated['permission'];
+        $user->role = $validated['role'];
 
         $success = $user->save();
 
@@ -60,13 +60,13 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email',
             'password' => 'required|string|min:8',
-            'permission' => 'required',
+            'role' => 'required',
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
-        // $user->permission = $validated['permission'];
+        $user->role = $validated['role'];
 
         $success = $user->save();
 

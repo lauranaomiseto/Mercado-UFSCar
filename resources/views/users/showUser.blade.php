@@ -1,7 +1,7 @@
 <x-layout>
     
     <div class="max-w-[850px] w-4/5 m-auto my-[50px] border-b-2 border-orange">
-        <x-buttons.icon route="{{ route('products') }}" text="Voltar">
+        <x-buttons.icon route="{{ route('users') }}" text="Voltar">
         </x-buttons.icon>
     
         <div class="flex justify-between content-center flex-wrap my-[50px] gap-5">
@@ -32,7 +32,7 @@
             <strong>Email:</strong> {{ $user->email }}
         </p>
         <p class="mb-[15px]">
-            <strong>Permissão:</strong> Tipo X
+            <strong>Papel:</strong> {{ $user->role }}
         </p>
     </div>
 
