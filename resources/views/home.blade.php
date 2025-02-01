@@ -1,14 +1,25 @@
 <x-layout>
-
     <div class="max-w-[850px] w-4/5 m-auto my-[50px] border-b-2 border-orange">
 
+        @php
+            $roleLabel = match (Auth::user()->role) {
+                'adm' => 'ADMINISTRADOR',
+                'gestor' => 'GESTOR',
+                'gerente' => 'GERENTE',
+                'estoquista' => 'GESTOR',
+                'operador' => 'OPERADOR',
+                default => 'DESCONHECIDO',
+                };
+        @endphp
+
         <h1 class="w-fit text-4xl font-light m-auto my-[50px]"> 
-            PAINEL DE <span class="font-bold">ADMINSTRADOR</span>
+            PAINEL DE <span class="font-bold">{{ $roleLabel }}</span>
         </h1>
     </div>
 
     <div class="m-auto max-w-[600px] flex flex-wrap gap-[30px]">
 
+    @can('gestao-usuarios')
         <x-cards.feature text="Gestão de Usuários" route="{{ route('users') }}">
             <x-slot:icon>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -17,7 +28,9 @@
     
             </x-slot:icon>
         </x-cards.feature>
+    @endcan
     
+    @can('gestao-produtos')
         <x-cards.feature text="Gestão de Produtos" route="{{ route('products') }}">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,7 +38,9 @@
                 </svg>
             </x-slot:icon>
         </x-cards.feature>
-    
+    @endcan
+
+    @can('gestao-estoque')    
         <x-cards.feature text="Gestão de Estoque" route="{{ route('batches') }}">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,7 +49,9 @@
                 </svg>
             </x-slot:icon>
         </x-cards.feature>
+    @endcan
     
+    @can('emissao-relatorios')
         <x-cards.feature text="Emissão de relatórios" route="">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -43,7 +60,9 @@
                 </svg>
             </x-slot:icon>
         </x-cards.feature>
-    
+    @endcan
+
+    @can('operacao-vendas')
         <x-cards.feature text="Operação de vendas" route="{{ route('sales') }}">
             <x-slot:icon>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -52,6 +71,6 @@
                 </svg>
             </x-slot:icon>
         </x-cards.feature>
-
+    @endcan
     </div>
 </x-layout>
