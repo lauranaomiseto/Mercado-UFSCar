@@ -75,6 +75,9 @@ Route::middleware('can:operacao-vendas')->group(function (){
     });
 });
 
-Route::controller(SalesReportController::class)->group(function () {
-    Route::get('/reports', 'salesReport')->name('report'); // Exibir relatório
+Route::middleware('can:emissao-relatorios')->group(function (){
+    Route::controller(SalesReportController::class)->group(function () {
+        Route::get('/reports', 'salesReport')->name('report'); // Exibir relatório
+    });
 });
+
