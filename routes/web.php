@@ -8,6 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SalesReportController;
+
 
 use App\Http\Middleware\CheckUserRole;
 
@@ -71,4 +73,8 @@ Route::middleware('can:operacao-vendas')->group(function (){
         Route::get('/sales/{sale}', 'show')->name('sales.show');
         Route::delete('/sales/{sale}', 'destroy')->name('sales.destroy');
     });
+});
+
+Route::controller(SalesReportController::class)->group(function () {
+    Route::get('/reports', 'salesReport')->name('report'); // Exibir relatório
 });
