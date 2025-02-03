@@ -4,7 +4,7 @@
     'texttype'
 ])
 
-<div class="w-[250px] py-2.5 pl-2.5 flex item-center font-light border-b-2 border-orange">
+<div class="w-[250px] py-2.5 pl-2.5 flex item-center font-light border-b-2 border-orange bg-white mb-[25px]">
     <div class="mr-4">
         {{ $icon }}
     </div>
