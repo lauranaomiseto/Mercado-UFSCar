@@ -157,13 +157,11 @@ class SaleController extends Controller
      */
     public function destroy(Sale $sale)
     {
-		$salesProd = SaleProd::where('id_venda', $sale->getAttributes()['id'])->get()->all();
-		foreach ($salesProd as $item) {
-            //dd($item);
-            $item->delete();
-        }
+        SaleProd::where('id_venda', $sale->id)->delete();
+
         $sale->delete();
 
-        return redirect()->route('sales');
+        return redirect()->route('sales')->with('message', 'Venda excluída com sucesso!');
     }
+
 }
