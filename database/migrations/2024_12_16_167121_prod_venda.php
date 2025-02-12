@@ -18,9 +18,9 @@ return new class extends Migration
             $table->unsignedInteger('quantidade');
 			$table->timestamps();
 			$table->primary(['id_produto', 'id_lote', 'id_venda']);
-            $table->foreign('id_produto')->references('id')->on('produto');
-			$table->foreign('id_lote')->references('id')->on('lote');
-			$table->foreign('id_venda')->references('id')->on('venda');
+            $table->foreign('id_produto')->references('id')->on('produto')->onDelete('cascade');
+			$table->foreign('id_lote')->references('id')->on('lote')->onDelete('cascade');
+			$table->foreign('id_venda')->references('id')->on('venda')->onDelete('cascade');
         });
     }
 
