@@ -18,8 +18,6 @@
         </div>
     </div>
 	
-	
-	
 	<div class="w-fit m-auto text-dark-gray">
         @foreach ($sales as $sale)
 
@@ -28,9 +26,8 @@
 			<div class="w-[200px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis">Total: {{ number_format($sale->total_venda, 2, ',', '.') }}</div>
 
             <div class="w-fit text-orange">
-                <a href="{{ route('sales.create') }}" class="mr-5 hover:underline">Editar</a>
+                <a href="{{ route('sales.edit', ['sale' => $sale->id_venda]) }}" class="mr-5 hover:underline">Editar</a>
                 <a href="{{ route('sales.show', ['sale' => $sale->id_venda]) }}" class="mr-5 hover:underline">Detalhar</a>
-				<a href="{{ route('sales.destroy', ['sale' => $sale->id_venda]) }}" class="hover:underline">Remover</a>
             </div>
         </div>
 

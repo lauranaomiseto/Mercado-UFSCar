@@ -16,8 +16,6 @@ class SaleController extends Controller
      * Display a listing of the resource.
      */
 	
-	public static $produtos = array();
-	
     public function index()
     {
         $sales = DB::table('venda')
@@ -39,12 +37,12 @@ class SaleController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {	
-	
+    {
 		$products = DB::table('lote')
-            ->join('produto', 'lote.id_produto', '=', 'produto.id')
-            ->select('lote.id as id_lote', 'id_produto', 'produto.descricao', 'lote.quantidade', 'produto.preco')
-            ->get();
+			->join('produto', 'lote.id_produto', '=', 'produto.id')
+			->select('id_produto', 'produto.descricao', DB::raw('SUM(lote.quantidade) as total_quantidade'), 'produto.preco')
+			->groupBy('id_produto', 'produto.descricao', 'produto.preco')
+			->get();
 
         return view('sales/createSale', [
             'products' => $products,
@@ -54,123 +52,91 @@ class SaleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(Request $request)
-    // {
-	// 	$items = $request->all();
-		
-	// 	$sale = new Sale();
-    //     $success = $sale->save();
-		
-	// 	if(!$success)
-    //     {
-    //         return redirect()->back()->with('message', 'Algo deu errado...');
-    //     }
-		
-	// 	$sales = Sale::all();
-	// 	$id_venda = $sales[sizeof($sales)-1]->getAttributes()['id'];
-		
-	// 	$products = DB::table('lote')
-    //         ->join('produto', 'lote.id_produto', '=', 'produto.id')
-    //         ->select('lote.id as id_lote', 'id_produto', 'produto.descricao', 'lote.quantidade', 'produto.preco')
-    //         ->get()
-	// 		->all();
-		
-		
-	// 	$id_prod = 0;
-	// 	$id_lote = 0;
-	// 	foreach ($items as $chave => $valor) {
-	// 		if (strcmp($chave, "_token") == 0)
-	// 			continue;
-	// 		else if (str_contains($chave, "product")) {
-	// 			$keys = array_column($products, 'id_produto');
-	// 			$index = array_search($valor, $keys);
-	// 			$id_prod = $products[$index]->id_produto;
-	// 			$id_lote = $products[$index]->id_lote;
-	// 		} else {
-	// 			$saleprod = new SaleProd();
-	// 			$saleprod->id_produto = $id_prod;
-	// 			$saleprod->id_lote = $id_lote;
-	// 			$saleprod->id_venda = $id_venda;
-	// 			$saleprod->quantidade = $valor;
-	// 			$saleprod->save();
-	// 		}
-	// 	}
-		
-    //     return redirect()->route('sales');
-    // }
-
     public function store(Request $request)
-{
-    // Pega todos os dados enviados
-    $items = $request->all();
-    
-    // Cria uma nova venda
-    $sale = new Sale();
-    $success = $sale->save();
+    {
+		$items = $request->all();
+		
+		DB::beginTransaction();
+		
+		try {
+		
+			$sale = new Sale();
+			$success = $sale->save();
+			
+			if(!$success)
+			{
+				DB::rollBack();
+				return redirect()->back()->with('message', 'Algo deu errado...');
+			}
+			
+			$sales = Sale::all();
+			$id_venda = $sales[sizeof($sales)-1]->getAttributes()['id'];
+			
+			$products = DB::table('lote')
+				->join('produto', 'lote.id_produto', '=', 'produto.id')
+				->select('lote.id as id_lote', 'id_produto', 'produto.descricao', 'lote.quantidade', 'lote.validade', 'produto.preco')
+				->orderBy('lote.validade', 'asc')
+				->get()
+				->all();
 
-    if (!$success) {
-        return redirect()->back()->with('message', 'Algo deu errado...');
+			foreach ($items as $chave => $valor) {
+				if (strcmp($chave, "_token") == 0)
+					continue;
+				else if (str_contains($chave, "product")) {
+					
+					$filteredProducts = array_filter($products, fn($product) => $product->id_produto == $valor);
+					$filteredProducts = array_values($filteredProducts);
+					$id_prod = $filteredProducts[0]->id_produto;
+					$id_lotes = [];
+					$quantidades = [];
+					foreach ($filteredProducts as $product) {
+						$id_lotes[] = $product->id_lote;
+						$quantidades[] = $product->quantidade;
+					}
+
+				} else {
+					
+					$quantidade = $valor;
+					$i = 0;
+					
+					while ($quantidade > 0 && $i < count($id_lotes)) {
+						$lote_quantidade = $quantidades[$i];
+						$saleprod_quantidade = min($quantidade, $lote_quantidade);
+						
+						$saleprod = new SaleProd();
+						$saleprod->id_produto = $id_prod;
+						$saleprod->id_lote = $id_lotes[$i];
+						$saleprod->id_venda = $id_venda;
+						$saleprod->quantidade = $saleprod_quantidade;
+						$saleprod->save();
+
+						$quantidade = $quantidade - $saleprod_quantidade;
+
+						$quantidades[$i] = $quantidades[$i] -  $saleprod_quantidade;
+						
+						$batch = Batch::find($id_lotes[$i]);
+						
+						$batch->quantidade = $batch->quantidade - $saleprod_quantidade;
+						$batch->save();
+						
+						if ($quantidades[$i] <= 0) {
+							$i++;
+						}
+					}
+					
+					if ($quantidade > 0) {
+						throw new Exception("Não há produtos suficientes no sistema");
+					}
+				}
+			}
+			
+			DB::commit();
+			return redirect()->route('sales');
+		} catch (\Exception $e) {
+			DB::rollBack();
+			return redirect()->back()->with('message', 'Erro ao registrar a venda: ' . $e->getMessage());
+		}
     }
-
-    // Recupera o último id da venda criada
-    $sales = Sale::all();
-    $id_venda = $sales[sizeof($sales)-1]->getAttributes()['id'];
-
-    // Recupera os produtos disponíveis e seus lotes
-    $products = DB::table('lote')
-        ->join('produto', 'lote.id_produto', '=', 'produto.id')
-        ->select('lote.id as id_lote', 'id_produto', 'produto.descricao', 'lote.quantidade', 'produto.preco')
-        ->get()
-        ->all();
-
-    $id_prod = 0;
-    $id_lote = 0;
-    
-    // Itera sobre os produtos enviados e processa para salvar ou atualizar
-    foreach ($items as $chave => $valor) {
-        if (strcmp($chave, "_token") == 0)
-            continue;
-        else if (str_contains($chave, "product")) {
-            // Encontra o produto baseado no valor enviado
-            $keys = array_column($products, 'id_produto');
-            $index = array_search($valor, $keys);
-            $id_prod = $products[$index]->id_produto;
-            $id_lote = $products[$index]->id_lote;
-        } else {
-            // Verifica se o produto já está na venda
-            $saleprod = SaleProd::where('id_venda', $id_venda)
-                ->where('id_produto', $id_prod)
-                ->where('id_lote', $id_lote)
-                ->first(); // Obtém o produto relacionado à venda, lote e produto específico
-
-            if ($saleprod) {
-                // Se já existe, incrementa a quantidade
-                // $saleprod->id_produto = $id_prod;
-                $saleprod->quantidade += $valor;
-
-
-                $saleprod->id_produto = $id_prod;
-                $saleprod->id_lote = $id_lote;
-                $saleprod->id_venda = $id_venda;
-                // $saleprod->quantidade = $valor;
-
-                $saleprod->save();
-            } else {
-                // Se não existe, cria um novo produto na venda
-                $saleprod = new SaleProd();
-                $saleprod->id_produto = $id_prod;
-                $saleprod->id_lote = $id_lote;
-                $saleprod->id_venda = $id_venda;
-                $saleprod->quantidade = $valor;
-                $saleprod->save();
-            }
-        }
-    }
-
-    // Redireciona para a lista de vendas
-    return redirect()->route('sales');
-}
-
 
     /**
      * Display the specified resource.
@@ -190,8 +156,19 @@ class SaleController extends Controller
 		->get()
 		->all()[0];
 		
+		$products_bought = DB::table('venda')
+		->join('prod_venda', 'venda.id', '=', 'prod_venda.id_venda')
+		->join('produto', 'produto.id', '=', 'prod_venda.id_produto')
+		->select(
+			'*',
+		)
+		->where('id_venda', '=', $sale->getAttributes()['id'])
+		->get()
+		->all();
+		
         return view('sales/showSale', [
             'sale' => $sales,
+			'products_bought' => $products_bought
         ]);
     }
 
@@ -199,43 +176,130 @@ class SaleController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Sale $sale)
-    {
+    {	
+	
+		$products = DB::table('lote')
+            ->join('produto', 'lote.id_produto', '=', 'produto.id')
+            ->select('lote.id as id_lote', 'id_produto', 'produto.descricao', 'lote.quantidade', 'produto.preco')
+            ->get();
+		
+		$products_bought = DB::table('venda')
+			->join('prod_venda', 'venda.id', '=', 'prod_venda.id_venda')
+			->join('produto', 'produto.id', '=', 'prod_venda.id_produto')
+			->select(
+				'*',
+			)
+			->where('id_venda', '=', $sale->getAttributes()['id'])
+			->get()
+			->all();
+		
         return view('sales/editSale', [
             'sale' => $sale,
+			'products' => $products,
+			'products_bought' => $products_bought
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Sale $sale)
-    {
-        $validated = $request->validate([
-            'id' => 'required|numeric',
-        ]);
+    {	
+	
+		$items = $request->all();
+		$id_venda = $sale->getAttributes()['id'];
+		
+		$products = DB::table('lote')
+			->join('produto', 'lote.id_produto', '=', 'produto.id')
+			->select('lote.id as id_lote', 'id_produto', 'produto.descricao', 'lote.quantidade', 'lote.validade', 'produto.preco')
+			->orderBy('lote.validade', 'asc')
+			->get()
+			->all();
+		
+		$products_bought = DB::table('venda')
+			->join('prod_venda', 'venda.id', '=', 'prod_venda.id_venda')
+			->join('produto', 'produto.id', '=', 'prod_venda.id_produto')
+			->select(
+				'*',
+			)
+			->where('id_venda', '=', $sale->getAttributes()['id'])
+			->get()
+			->all();
+		
+		DB::beginTransaction();
+		
+		try {
+			
+			foreach ($products_bought as $product_bought) {
+				$batch_id = $product_bought->id_lote;
+				$quantity_sold = $product_bought->quantidade;
 
-        $sale->id = $validated['id'];
-        $success = $sale->save();
+				$batch = Batch::find($batch_id);
+				$batch->quantidade += $quantity_sold;
+				$batch->save();
+			}
+			
+			SaleProd::where('id_venda', $id_venda)->delete();
+			foreach ($items as $chave => $valor) {
+				if (strcmp($chave, "_token") == 0 || strcmp($chave, "_method") == 0) {
+					continue;
+				} else if (str_contains($chave, "product")) {
+					$filteredProducts = array_filter($products, fn($product) => $product->id_produto == $valor);
+					$filteredProducts = array_values($filteredProducts);
+					$id_prod = $filteredProducts[0]->id_produto;
+					$id_lotes = [];
+					$quantidades = [];
+					foreach ($filteredProducts as $product) {
+						$id_lotes[] = $product->id_lote;
+						$quantidades[] = $product->quantidade;
+					}
+				} else {
+					
+					$quantidade = $valor;
+					$i = 0;
+					
+					
+					while ($quantidade > 0 && $i < count($id_lotes)) {
+						
+						$lote_quantidade = $quantidades[$i];
+						$saleprod_quantidade = min($quantidade, $lote_quantidade);
+						
+						$saleprod = new SaleProd();
+						$saleprod->id_produto = $id_prod;
+						$saleprod->id_lote = $id_lotes[$i];
+						$saleprod->id_venda = $id_venda;
+						$saleprod->quantidade = $saleprod_quantidade;
+						$saleprod->save();
 
-        if(!$success)
-        {
-            return redirect()->back()->with('message', 'Algo deu errado...');
-        }
-    
+						$quantidade = $quantidade - $saleprod_quantidade;
+						$quantidades[$i] = $quantidades[$i] -  $saleprod_quantidade;
+						
+						$batch = Batch::find($id_lotes[$i]);
+						$batch->quantidade = $batch->quantidade - $saleprod_quantidade;
+						$batch->save();
+						
+						if ($quantidades[$i] <= 0) {
+							$i++;
+						}
+					}
+					
+					if ($quantidade > 0) {
+						throw new Exception("Não há produtos suficientes no sistema");
+					}
+				}
+			}
+			DB::commit();
+			return redirect()->route('sales');
+			
+		} catch (\Exception $e) {
+			DB::rollBack();
+			return redirect()->back()->with('message', 'Erro ao registrar a venda: ' . $e->getMessage());
+		}
+		
         return redirect()->route('sales');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-
-
-     public function destroy(Sale $sale)
+    public function destroy(Sale $sale)
     {
-        // Exclua os produtos associados à venda primeiro
         SaleProd::where('id_venda', $sale->id)->delete();
 
-        // Exclua a venda
         $sale->delete();
 
         return redirect()->route('sales')->with('message', 'Venda excluída com sucesso!');

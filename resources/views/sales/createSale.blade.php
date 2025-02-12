@@ -85,6 +85,46 @@
                 return;
             }
 
+            for (let i = 0; i < addedProducts.length; i++) {
+                if (selectedProduct.id_produto == addedProducts[i].id) {
+
+                    addedProducts[i].quantidade += parseInt(quantidade.value);
+
+                    if (addedProducts[i].quantidade <= 0 || addedProducts[i].quantidade > selectedProduct.quantidade) {
+                        alert("Quantidade inválida!");
+                        addedProducts[i].quantidade -= quantidade.value;
+                        return;
+                    }
+
+                    const repeated = document.querySelectorAll(`[data-index="${addedProducts[i].index}"]`)
+
+                    repeated[0].innerHTML = `
+                    <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                    ${selectedProduct.id_produto}
+                    </div>
+                    <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                    ${selectedProduct.descricao}
+                    </div>
+                    <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                    ${selectedProduct.preco.toFixed(2)}
+                    </div>
+                    <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold"> ${addedProducts[i].quantidade}</div>
+                    <div class="w-[100px] mr-5 text-orange">
+                    <a href="#" class="remove-item hover:underline" data-index="${itemIndex}">Remover</a>
+                    </div>
+                    `;
+
+                    repeated[3].value = addedProducts[i].quantidade;
+
+                    total_price = 0.;
+                    addedProducts.forEach(e => total_price += e.quantidade * e.preco);
+                    const total = document.getElementById('total_price');
+                    total.innerText = total_price.toFixed(2);
+
+                    return;
+                }
+            }
+
             const input1 = document.createElement('input');
             input1.type = "hidden";
             input1.name = "product_ids_" + itemIndex;
@@ -104,7 +144,7 @@
                 id: selectedProduct.id_produto,
                 descricao: selectedProduct.descricao,
                 preco: selectedProduct.preco,
-                quantidade: quantidade.value,
+                quantidade: parseInt(quantidade.value),
                 index: itemIndex,
             });
 
