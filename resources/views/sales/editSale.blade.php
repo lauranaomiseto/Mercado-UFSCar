@@ -18,9 +18,11 @@
             <button type="button" id="add-item" class="border border-orange-500 text-orange-500 px-8 py-4 text-lg rounded hover:bg-orange-500 hover:text-white transition">Adicionar</button>
         </form>
     </div>
-
-    <form action="{{ route('sales.store') }}" method="POST" id="products_to_store">
+	
+    <form action="{{ route('sales.update', ['sale' => $sale->id]) }}" method="POST" id="products_to_store">
         @csrf
+		@method('PUT')
+		
         <div class="mt-48 grid grid-cols-3 gap-6">
             <!-- Lista de produtos -->
             <div class="col-span-2 space-y-4">
@@ -55,12 +57,86 @@
     </form>
 
     <script>
-        let addedProducts = []; // Vetor para armazenar os produtos adicionados
+        let addedProducts = [];
         let itemIndex = 0;
 
         const prods = @json($products);
-        console.log(prods);
+		const prods_bought = @json($products_bought);
+		console.log(prods);
+        console.log(prods_bought);
+		
+		for (let i = 0; i < prods_bought.length; i++) {
+			
+			const container = document.getElementById('products_to_store');
+            const produto = prods_bought[i].id_produto;
+            const quantidade = prods_bought[i].quantidade;
+            const produtos = document.getElementById('produtos');
+            let selectedProduct = null;
+			
+			console.log(produto);
 
+            for (let j = 0; j < prods.length; j++) {
+                if (prods[j].id_produto == produto) {
+                    selectedProduct = prods[j];
+                    break;
+                }
+            }
+
+            const input1 = document.createElement('input');
+            input1.type = "hidden";
+            input1.name = "product_ids_" + itemIndex;
+            input1.value = produto;
+			input1.setAttribute('data-index', itemIndex);
+
+            const input2 = document.createElement('input');
+            input2.type = "hidden";
+            input2.name = "quantitys_" + itemIndex;
+            input2.value = quantidade;
+			input2.setAttribute('data-index', itemIndex);
+
+            container.appendChild(input1);
+            container.appendChild(input2);
+
+            addedProducts.push({
+                id: selectedProduct.id_produto,
+                descricao: selectedProduct.descricao,
+                preco: selectedProduct.preco,
+                quantidade: quantidade,
+                index: itemIndex,
+            });
+
+            const newCard = document.createElement('div');
+            newCard.classList.add('flex', 'items-center', 'p-5', 'bg-light-gray', 'rounded-lg', 'mb-5');
+            newCard.setAttribute('data-index', itemIndex);
+
+            newCard.innerHTML = `
+                <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                    ${selectedProduct.id_produto}
+                </div>
+                <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                    ${selectedProduct.descricao}
+                </div>
+                <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+                    ${selectedProduct.preco.toFixed(2)}
+                </div>
+                <div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold"> ${quantidade}</div>
+
+                <div class="w-[100px] mr-5 text-orange">
+                    <a href="#" class="remove-item hover:underline" data-index="${itemIndex}">Remover</a>
+                </div>
+            `;
+
+            produtos.appendChild(newCard);
+			
+			total_price = 0.;
+			addedProducts.forEach(e => total_price += e.quantidade * e.preco);
+			const total = document.getElementById('total_price');
+			total.innerText = total_price.toFixed(2);
+			
+            itemIndex++;
+		}
+		
+		
         document.getElementById('add-item').addEventListener('click', () => {
             const container = document.getElementById('products_to_store');
             const produto = document.getElementById('produto');
@@ -152,5 +228,6 @@
 				total.innerText = total_price.toFixed(2);
             }
         });
+		
     </script>
 </x-layout>

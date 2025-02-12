@@ -32,7 +32,47 @@
             <strong>Total:</strong> {{ number_format($sale->total_venda, 2, ',', '.') }}
         </p>
     </div>
+	
+	<div class="col-span-2 space-y-4">
+		<div class="w-fit m-auto text-dark-gray mt-8" id="produtos">
+			<!-- Cabeçalho da tabela -->
+			<div class="flex items-center p-5 bg-gray-300 rounded-t-lg font-bold">
+				<div class="w-[150px] mr-5">Código</div>
+				<div class="w-[150px] mr-5">Descrição</div>
+				<div class="w-[150px] mr-5">Preço</div>
+				<div class="w-[150px] mr-5">Quantidade</div>
+				<div class="w-[150px] mr-5">Total</div> <!-- Added the Total column -->
+			</div>
+			
+			@foreach ($products_bought as $product)
+			<div class="w-fit mb-5 flex p-5 bg-light-gray rounded-lg">
+				<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+					{{ $product->id_produto }}
+				</div>
+				
+				<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+					{{ $product->descricao }}
+				</div>
 
-    
+				<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+					{{ number_format($product->preco, 2, ',', '') }}
+				</div>
 
+				<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+					{{ $product->quantidade }}
+				</div>
+
+				<div class="w-[150px] mr-5 overflow-hidden whitespace-nowrap text-ellipsis font-semibold">
+					{{ number_format($product->preco * $product->quantidade, 2, ',', '') }} <!-- Calculated total -->
+				</div>
+			</div>
+			@endforeach
+		</div>
+	</div>
 </x-layout>
+
+
+
+
+
+
