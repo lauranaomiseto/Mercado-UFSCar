@@ -15,13 +15,15 @@ return new class extends Migration
             $table->unsignedInteger('id_produto');
             $table->unsignedInteger('id_lote');
 			$table->unsignedInteger('id_venda');
-            $table->unsignedInteger('quantidade');
+            $table->Integer('quantidade');
 			$table->timestamps();
 			$table->primary(['id_produto', 'id_lote', 'id_venda']);
             $table->foreign('id_produto')->references('id')->on('produto')->onDelete('cascade');
 			$table->foreign('id_lote')->references('id')->on('lote')->onDelete('cascade');
 			$table->foreign('id_venda')->references('id')->on('venda')->onDelete('cascade');
         });
+		
+		DB::statement('ALTER TABLE prod_venda ADD CONSTRAINT quantidade_positive CHECK (quantidade >= 0)');
     }
 
     /**

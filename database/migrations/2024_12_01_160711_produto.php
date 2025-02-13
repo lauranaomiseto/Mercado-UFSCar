@@ -17,6 +17,8 @@ return new class extends Migration
             $table->float('preco');
             $table->timestamps();
         });
+		
+		DB::statement('ALTER TABLE produto ADD CONSTRAINT preco_positive CHECK (preco >= 0)');
     }
 
     /**
